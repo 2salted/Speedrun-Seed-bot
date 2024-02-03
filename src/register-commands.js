@@ -6,10 +6,12 @@ config();
 async function registerCommands() {
   const commands = new SlashCommandBuilder()
     .setName("submit")
-    .setDescription("replies with submit your amazing speedrunning seed")
+    .setDescription("submit your amazing speedrunning seed")
     .addStringOption((option) =>
       option.setName("seed").setDescription("seed sumbission")
     );
+
+console.log(JSON.stringify(commands))
 
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
@@ -17,7 +19,7 @@ async function registerCommands() {
     console.log("Started refreshing application (/) commands.");
 
     await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
-      body: commands,
+      body: JSON.parse(JSON.stringify(commands)).json 
     });
 
     console.log("Successfully reloaded application (/) commands.");

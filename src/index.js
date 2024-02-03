@@ -33,7 +33,7 @@ client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
   if (interaction.commandName === "submit") {
-    const seed = interaction.option.getString('seed')
+    const seed = interaction.options.getString('seed')
     await interaction.reply(`your seed was: ${seed}`);
   }
 });
