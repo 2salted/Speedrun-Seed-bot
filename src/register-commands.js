@@ -1,25 +1,28 @@
-import { REST, Routes, SlashCommandBuilder } from "discord.js";
+import { REST } from "discord.js";
+import { SlashCommandBuilder } from "@discordjs/builders";
+import { Routes } from "discord-api-types/v9";
 import { config } from "dotenv";
 
 config();
 
 async function registerCommands() {
-  const commands = new SlashCommandBuilder()
-    .setName("submit")
-    .setDescription("submit your amazing speedrunning seed")
-    .addStringOption((option) =>
-      option.setName("seed").setDescription("seed sumbission")
-    );
-
-console.log(JSON.stringify(commands))
+  const commands = [
+    new SlashCommandBuilder()
+      .setName("submit")
+      .setDescription("Submit your amazing speedrunning seed")
+      .addStringOption((option) =>
+        option.setName("seed").setDescription("Seed submission")
+      )
+      .toJSON(),
+  ];
 
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
   try {
     console.log("Started refreshing application (/) commands.");
 
-    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
-      body: JSON.parse(JSON.stringify(commands)).json 
+    await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), {
+      body: commands,
     });
 
     console.log("Successfully reloaded application (/) commands.");

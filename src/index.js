@@ -1,6 +1,6 @@
 import { config } from "dotenv";
 import { Client, IntentsBitField } from "discord.js";
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 import { registerCommands } from "./register-commands.js";
 
 config();
