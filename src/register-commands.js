@@ -14,6 +14,10 @@ async function registerCommands() {
         option.setName("seed").setDescription("Seed submission")
       )
       .toJSON(),
+    new SlashCommandBuilder()
+      .setName("request")
+      .setDescription("Request a random seed")
+      .toJSON(),
   ];
 
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
@@ -21,9 +25,15 @@ async function registerCommands() {
   try {
     console.log("Started refreshing application (/) commands.");
 
-    await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), {
-      body: commands,
-    });
+    await rest.put(
+      Routes.applicationGuildCommands(
+        process.env.CLIENT_ID,
+        process.env.GUILD_ID
+      ),
+      {
+        body: commands,
+      }
+    );
 
     console.log("Successfully reloaded application (/) commands.");
   } catch (error) {
