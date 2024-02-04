@@ -1,6 +1,5 @@
 import { config } from "dotenv";
 import { Client, IntentsBitField } from "discord.js";
-import mongoose from "mongoose";
 import { registerCommands } from "./register-commands.js";
 
 config();
@@ -37,12 +36,5 @@ client.on("interactionCreate", async (interaction) => {
     await interaction.reply(`your seed was: ${seed}`);
   }
 });
-
-  try {
-  await mongoose.connect(process.env.MONGODB_URI);
-  console.log("Connected to DB");
-} catch (error) {
-  console.log(`Error: ${error}`);
-}
 
 client.login(process.env.TOKEN);
