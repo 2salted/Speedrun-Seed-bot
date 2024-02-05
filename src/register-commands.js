@@ -10,19 +10,17 @@ async function registerCommands() {
     new SlashCommandBuilder()
       .setName("submit")
       .setDescription("Submit your amazing speedrunning seed")
-      .addStringOption(
-        (option) =>
-          option
-            .setName("seed")
-            .setDescription("Enter the seed here")
-            .setRequired(true) // You might want to make seed required
+      .addStringOption((option) =>
+        option
+          .setName("seed")
+          .setDescription("Enter the seed here")
+          .setRequired(true)
       )
-      .addStringOption(
-        (option) =>
-          option
-            .setName("description")
-            .setDescription("Enter a description;")
-            .setRequired(true) // You might want to make description required
+      .addStringOption((option) =>
+        option
+          .setName("description")
+          .setDescription("Enter a description;")
+          .setRequired(true)
       )
       .toJSON(),
     new SlashCommandBuilder()
@@ -38,19 +36,13 @@ async function registerCommands() {
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
 
   try {
-    console.log("Started refreshing application (/) commands.");
+    console.log("Started refreshing global (/) commands.");
 
-    await rest.put(
-      Routes.applicationGuildCommands(
-        process.env.CLIENT_ID,
-        process.env.GUILD_ID
-      ),
-      {
-        body: commands,
-      }
-    );
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+      body: commands,
+    });
 
-    console.log("Successfully reloaded application (/) commands.");
+    console.log("Successfully reloaded global (/) commands.");
   } catch (error) {
     console.error(error);
   }

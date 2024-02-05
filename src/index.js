@@ -46,9 +46,9 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "submit") {
     const seed = interaction.options.getString("seed");
     const description = interaction.options.getString("description");
-
-    await interaction.reply(`${seed} with description "${description}" was successfully added`);
-
+  
+    await interaction.reply('Your seed has been successfully added!');
+  
     // Read the existing seeds from the JSON file
     let seeds = [];
     try {
@@ -56,16 +56,36 @@ client.on("interactionCreate", async (interaction) => {
     } catch (error) {
       console.error("Error reading seeds.json:", error);
     }
-
+  
     // Add the submitted seed to the array
     seeds.push({ seed, description });
-
+  
     // Write the updated seeds array back to the JSON file
     try {
       fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
       console.log("Seed saved successfully.");
+  
+      // Update user seeds data
+      let userData = {};
+      try {
+        userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
+      } catch (error) {
+        console.error("Error reading user_seeds.json:", error);
+      }
+  
+      // Initialize user's seeds if not exist
+      if (!userData[interaction.user.id]) {
+        userData[interaction.user.id] = [];
+      }
+  
+      // Add the submitted seed to the user's list of submitted seeds
+      userData[interaction.user.id].push(seed);
+  
+      // Write the updated user seeds data back to the JSON file
+      fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
+      console.log("User seeds data updated.");
     } catch (error) {
-      console.error("Error writing seeds.json:", error);
+      console.error("Error writing seeds.json or user_seeds.json:", error);
     }
   } else if (interaction.commandName === "request") {
     // Read the available seeds from the JSON file
