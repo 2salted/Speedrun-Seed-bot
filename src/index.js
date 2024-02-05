@@ -2,6 +2,8 @@ import { config } from "dotenv";
 import { Client, IntentsBitField } from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
+const seedDataFilePath = 'seeds.json';
+const userDataFilePath = 'user_seeds.json';
 
 config();
 registerCommands();
@@ -17,7 +19,7 @@ const client = new Client({
 
 // Event handler for bot being ready
 client.on("ready", () => {
-  client.user.setActivity("Speedrun seeds");
+  client.user.setActivity("MCSR Ranked");
   console.log(`${client.user.tag} is online.`);
 });
 
@@ -27,22 +29,24 @@ client.on("interactionCreate", async (interaction) => {
   // Your existing code for seed submission
   if (interaction.commandName === "submit") {
     const seed = interaction.options.getString("seed");
-    await interaction.reply(`${seed} was successfully added`);
+    const description = interaction.options.getString("description");
+
+    await interaction.reply(`${seed} with description "${description}" was successfully added`);
 
     // Read the existing seeds from the JSON file
     let seeds = [];
     try {
-      seeds = JSON.parse(fs.readFileSync("seeds.json", "utf8"));
+      seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
     } catch (error) {
       console.error("Error reading seeds.json:", error);
     }
 
     // Add the submitted seed to the array
-    seeds.push(seed);
+    seeds.push({ seed, description });
 
     // Write the updated seeds array back to the JSON file
     try {
-      fs.writeFileSync("seeds.json", JSON.stringify(seeds));
+      fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
       console.log("Seed saved successfully.");
     } catch (error) {
       console.error("Error writing seeds.json:", error);
@@ -51,29 +55,50 @@ client.on("interactionCreate", async (interaction) => {
     // Read the available seeds from the JSON file
     let seeds = [];
     try {
-      seeds = JSON.parse(fs.readFileSync("seeds.json", "utf8"));
+      seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
     } catch (error) {
       console.error("Error reading seeds.json:", error);
     }
 
+    // Read user data to determine which seeds the user has already received
+    let userData = {};
+    try {
+      userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
+    } catch (error) {
+      console.error("Error reading user_seeds.json:", error);
+    }
+
+    // Initialize user's seeds if not exist
+    if (!userData[interaction.user.id]) {
+      userData[interaction.user.id] = [];
+    }
+
+    // Filter seeds that the user hasn't received yet
+    const availableSeeds = seeds.filter(seed => !userData[interaction.user.id].includes(seed.seed));
+
     // If there are available seeds
-    if (seeds.length > 0) {
+    if (availableSeeds.length > 0) {
       // Select a random seed
-      const randomIndex = Math.floor(Math.random() * seeds.length);
-      const selectedSeed = seeds[randomIndex];
+      const randomIndex = Math.floor(Math.random() * availableSeeds.length);
+      const selectedSeed = availableSeeds[randomIndex];
 
       // Send the selected seed to the user
-      await interaction.user.send(`Your random seed is: ${selectedSeed}`);
+      await interaction.user.send(`Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`);
+
+      // Update user data to mark that the user has received this seed
+      userData[interaction.user.id].push(selectedSeed.seed);
+      try {
+        fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
+        console.log("User seed data updated.");
+      } catch (error) {
+        console.error("Error writing user_seeds.json:", error);
+      }
 
       // Inform the channel that the seed has been personally delivered
-      await interaction.reply(
-        "A random seed has been personally delivered to you."
-      );
+      await interaction.reply("A random seed has been personally delivered to you.");
     } else {
       // If no seeds are available
-      await interaction.reply(
-        `<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`
-      );
+      await interaction.reply(`<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`);
     }
   }
 });
