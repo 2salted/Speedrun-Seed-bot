@@ -29,6 +29,10 @@ async function registerCommands() {
       .setName("request")
       .setDescription("Request a random seed")
       .toJSON(),
+    new SlashCommandBuilder() // Adding the help command
+      .setName("help")
+      .setDescription("Display information about available commands.")
+      .toJSON(),
   ];
 
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);

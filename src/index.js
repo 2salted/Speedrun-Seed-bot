@@ -26,6 +26,22 @@ client.on("ready", () => {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
+  const { commandName } = interaction;
+
+  if (commandName === "help") {
+    const helpMessage = 
+      "Here are the available commands:\n" +
+      "/submit - Submit your amazing speedrunning seed. Usage: `/submit seed=<your seed> description=<your description>`\n" +
+      "/request - Request a random seed.\n" +
+      "/help - Display information about available commands.";
+
+    try {
+      await interaction.reply(helpMessage);
+    } catch (error) {
+      console.error('Error sending help message:', error);
+    }
+  }
+
   // Your existing code for seed submission
   if (interaction.commandName === "submit") {
     const seed = interaction.options.getString("seed");
