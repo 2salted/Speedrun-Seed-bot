@@ -10,8 +10,19 @@ async function registerCommands() {
     new SlashCommandBuilder()
       .setName("submit")
       .setDescription("Submit your amazing speedrunning seed")
-      .addStringOption((option) =>
-        option.setName("seed").setDescription("Seed submission")
+      .addStringOption(
+        (option) =>
+          option
+            .setName("seed")
+            .setDescription("Enter the seed here")
+            .setRequired(true) // You might want to make seed required
+      )
+      .addStringOption(
+        (option) =>
+          option
+            .setName("description")
+            .setDescription("Enter a description;")
+            .setRequired(true) // You might want to make description required
       )
       .toJSON(),
     new SlashCommandBuilder()

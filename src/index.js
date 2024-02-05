@@ -17,10 +17,10 @@ const client = new Client({
 
 // Event handler for bot being ready
 client.on("ready", () => {
+  client.user.setActivity("Speedrun seeds");
   console.log(`${client.user.tag} is online.`);
 });
 
-// Event handler for interactions (slash commands)
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
@@ -58,14 +58,24 @@ client.on("interactionCreate", async (interaction) => {
 
     // If there are available seeds
     if (seeds.length > 0) {
-      // Send the list of seeds to the user
-      await interaction.reply(`Available seeds: ${seeds.join(', ')}`);
+      // Select a random seed
+      const randomIndex = Math.floor(Math.random() * seeds.length);
+      const selectedSeed = seeds[randomIndex];
+
+      // Send the selected seed to the user
+      await interaction.user.send(`Your random seed is: ${selectedSeed}`);
+
+      // Inform the channel that the seed has been personally delivered
+      await interaction.reply(
+        "A random seed has been personally delivered to you."
+      );
     } else {
       // If no seeds are available
-      await interaction.reply("Sorry, all seeds have been used. Please submit more seeds.");
+      await interaction.reply(
+        `<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`
+      );
     }
   }
 });
 
-// Log in the bot with the provided token
 client.login(process.env.TOKEN);
