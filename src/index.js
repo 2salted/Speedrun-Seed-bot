@@ -19,7 +19,7 @@ const client = new Client({
 
 // Event handler for bot being ready
 client.on("ready", () => {
-  client.user.setActivity("MCSR Ranked");
+  client.user.setActivity("/Help");
   console.log(`${client.user.tag} is online.`);
 });
 
