@@ -20,6 +20,13 @@ async function registerCommands() {
         option
           .setName("description")
           .setDescription("Enter a description;")
+          .addChoices(
+            { name: "Ruined Portal", value: "Ruined Portal" },
+            { name: "Shipwreck", value: "Shipwreck" },
+            { name: "Village", value: "Village" },
+            { name: "Buried Treasure", value: "Buried Treasure" },
+            { name: "Desert Temple", value: "Desert Temple" }
+          )
           .setRequired(true)
       )
       .toJSON(),

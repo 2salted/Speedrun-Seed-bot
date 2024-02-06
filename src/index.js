@@ -1,9 +1,9 @@
 import { config } from "dotenv";
-import { Client, IntentsBitField } from "discord.js";
+import { Client, IntentsBitField, ActivityType } from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
-const seedDataFilePath = 'seeds.json';
-const userDataFilePath = 'user_seeds.json';
+const seedDataFilePath = "seeds.json";
+const userDataFilePath = "user_seeds.json";
 
 config();
 registerCommands();
@@ -17,11 +17,31 @@ const client = new Client({
   ],
 });
 
-// Event handler for bot being ready
-client.on("ready", () => {
-  client.user.setActivity("/Help");
+client.once("ready", () => {
   console.log(`${client.user.tag} is online.`);
+
+  // Update the status initially
+  updateStatus();
+
+  // Update the status every 10 minutes (in milliseconds)
+  setInterval(updateStatus, 10 * 1000);
 });
+
+async function updateStatus() {
+  // Read the seeds data from the JSON file
+  let seeds = [];
+  try {
+    seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
+  } catch (error) {
+    console.error("Error reading seeds.json:", error);
+  }
+
+  // Set the bot's activity to "Watching <number of seeds> seeds"
+  client.user.setActivity({
+    name: `${seeds.length} seeds`,
+    type: ActivityType.Watching,
+  });
+}
 
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
@@ -29,7 +49,8 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName } = interaction;
 
   if (commandName === "help") {
-    const helpMessage = 
+    const helpMessage =
+      `<@${interaction.user.id}> \n` +
       "Here are the available commands:\n" +
       "/submit - Submit your amazing speedrunning seed. Usage: `/submit seed=<your seed> description=<your description>`\n" +
       "/request - Request a random seed.\n" +
@@ -38,7 +59,7 @@ client.on("interactionCreate", async (interaction) => {
     try {
       await interaction.reply(helpMessage);
     } catch (error) {
-      console.error('Error sending help message:', error);
+      console.error("Error sending help message:", error);
     }
   }
 
@@ -46,46 +67,32 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "submit") {
     const seed = interaction.options.getString("seed");
     const description = interaction.options.getString("description");
-  
-    await interaction.reply('Your seed has been successfully added!');
-  
-    // Read the existing seeds from the JSON file
+
+    // Check if the seed has already been submitted
     let seeds = [];
     try {
       seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
     } catch (error) {
       console.error("Error reading seeds.json:", error);
     }
-  
+
+    if (seeds.some((existingSeed) => existingSeed.seed === seed)) {
+      // If the seed already exists, inform the user and return
+      await interaction.reply("This seed has already been submitted.");
+      return;
+    }
+
     // Add the submitted seed to the array
     seeds.push({ seed, description });
-  
+
     // Write the updated seeds array back to the JSON file
     try {
       fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
       console.log("Seed saved successfully.");
-  
-      // Update user seeds data
-      let userData = {};
-      try {
-        userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
-      } catch (error) {
-        console.error("Error reading user_seeds.json:", error);
-      }
-  
-      // Initialize user's seeds if not exist
-      if (!userData[interaction.user.id]) {
-        userData[interaction.user.id] = [];
-      }
-  
-      // Add the submitted seed to the user's list of submitted seeds
-      userData[interaction.user.id].push(seed);
-  
-      // Write the updated user seeds data back to the JSON file
-      fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
-      console.log("User seeds data updated.");
+      await interaction.reply("Your seed has been successfully added!");
     } catch (error) {
-      console.error("Error writing seeds.json or user_seeds.json:", error);
+      console.error("Error writing seeds.json:", error);
+      await interaction.reply("There was an error adding your seed.");
     }
   } else if (interaction.commandName === "request") {
     // Read the available seeds from the JSON file
@@ -110,7 +117,9 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     // Filter seeds that the user hasn't received yet
-    const availableSeeds = seeds.filter(seed => !userData[interaction.user.id].includes(seed.seed));
+    const availableSeeds = seeds.filter(
+      (seed) => !userData[interaction.user.id].includes(seed.seed)
+    );
 
     // If there are available seeds
     if (availableSeeds.length > 0) {
@@ -119,7 +128,9 @@ client.on("interactionCreate", async (interaction) => {
       const selectedSeed = availableSeeds[randomIndex];
 
       // Send the selected seed to the user
-      await interaction.user.send(`Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`);
+      await interaction.user.send(
+        `Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`
+      );
 
       // Update user data to mark that the user has received this seed
       userData[interaction.user.id].push(selectedSeed.seed);
@@ -131,10 +142,14 @@ client.on("interactionCreate", async (interaction) => {
       }
 
       // Inform the channel that the seed has been personally delivered
-      await interaction.reply("A random seed has been personally delivered to you.");
+      await interaction.reply(
+        "A random seed has been personally delivered to you."
+      );
     } else {
       // If no seeds are available
-      await interaction.reply(`<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`);
+      await interaction.reply(
+        `<@${interaction.user.id}> Sorry, you have either used up all the seeds or there are no available seeds! for more info use /help`
+      );
     }
   }
 });
