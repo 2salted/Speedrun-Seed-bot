@@ -46,56 +46,20 @@ async function updateStatus() {
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isCommand()) return;
 
-  const { commandName } = interaction;
+  const { commandName, options } = interaction; // Define the options variable here
 
-  if (commandName === "help") {
-    const helpMessage =
-      `<@${interaction.user.id}> \n` +
-      "Here are the available commands:\n" +
-      "/submit - Submit your amazing speedrunning seed. Usage: `/submit seed=<your seed> description=<your description>`\n" +
-      "/request - Request a random seed.\n" +
-      "/help - Display information about available commands.";
+  if (commandName === "submit") {
+    // Extract seed and description from options
+    const seedOption = options.getString("seed");
+    const descriptionOption = options.getString("description");
 
-    try {
-      await interaction.reply(helpMessage);
-    } catch (error) {
-      console.error("Error sending help message:", error);
-    }
-  }
-
-  // Your existing code for seed submission
-  if (interaction.commandName === "submit") {
-    const seed = interaction.options.getString("seed");
-    const description = interaction.options.getString("description");
-
-    // Check if the seed has already been submitted
-    let seeds = [];
-    try {
-      seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
-    } catch (error) {
-      console.error("Error reading seeds.json:", error);
-    }
-
-    if (seeds.some((existingSeed) => existingSeed.seed === seed)) {
-      // If the seed already exists, inform the user and return
-      await interaction.reply("This seed has already been submitted.");
+    // Check if both seed and description are provided
+    if (!seedOption || !descriptionOption) {
+      await interaction.reply("Please provide both seed and description.");
       return;
     }
 
-    // Add the submitted seed to the array
-    seeds.push({ seed, description });
-
-    // Write the updated seeds array back to the JSON file
-    try {
-      fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
-      console.log("Seed saved successfully.");
-      await interaction.reply("Your seed has been successfully added!");
-    } catch (error) {
-      console.error("Error writing seeds.json:", error);
-      await interaction.reply("There was an error adding your seed.");
-    }
-  } else if (interaction.commandName === "request") {
-    // Read the available seeds from the JSON file
+    // Read the seeds data from the JSON file
     let seeds = [];
     try {
       seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
@@ -103,54 +67,13 @@ client.on("interactionCreate", async (interaction) => {
       console.error("Error reading seeds.json:", error);
     }
 
-    // Read user data to determine which seeds the user has already received
-    let userData = {};
-    try {
-      userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
-    } catch (error) {
-      console.error("Error reading user_seeds.json:", error);
-    }
+    // Add the submitted seed to the seeds array
+    seeds.push({ seed: seedOption, description: descriptionOption });
 
-    // Initialize user's seeds if not exist
-    if (!userData[interaction.user.id]) {
-      userData[interaction.user.id] = [];
-    }
+    // Write the updated seeds array back to the JSON file
+    fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds, null, 2));
 
-    // Filter seeds that the user hasn't received yet
-    const availableSeeds = seeds.filter(
-      (seed) => !userData[interaction.user.id].includes(seed.seed)
-    );
-
-    // If there are available seeds
-    if (availableSeeds.length > 0) {
-      // Select a random seed
-      const randomIndex = Math.floor(Math.random() * availableSeeds.length);
-      const selectedSeed = availableSeeds[randomIndex];
-
-      // Send the selected seed to the user
-      await interaction.user.send(
-        `Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`
-      );
-
-      // Update user data to mark that the user has received this seed
-      userData[interaction.user.id].push(selectedSeed.seed);
-      try {
-        fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
-        console.log("User seed data updated.");
-      } catch (error) {
-        console.error("Error writing user_seeds.json:", error);
-      }
-
-      // Inform the channel that the seed has been personally delivered
-      await interaction.reply(
-        "A random seed has been personally delivered to you."
-      );
-    } else {
-      // If no seeds are available
-      await interaction.reply(
-        `<@${interaction.user.id}> Sorry, you have either used up all the seeds or there are no available seeds! for more info use /help`
-      );
-    }
+    await interaction.reply("Seed submitted successfully!");
   }
 });
 
