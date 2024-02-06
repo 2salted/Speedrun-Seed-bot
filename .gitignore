@@ -1,2 +1,4 @@
 .env
 node_modules
+seeds.json
+user_seeds.json
