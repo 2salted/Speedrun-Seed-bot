@@ -43,38 +43,30 @@ async function updateStatus() {
   });
 }
 
-client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
+if (interaction.commandName === "submit") {
+  const seed = interaction.options.getString("seed");
+  const description = interaction.options.getString("description");
 
-  const { commandName, options } = interaction; // Define the options variable here
+  await interaction.reply(`${seed} with description "${description}" was successfully added`);
 
-  if (commandName === "submit") {
-    // Extract seed and description from options
-    const seedOption = options.getString("seed");
-    const descriptionOption = options.getString("description");
-
-    // Check if both seed and description are provided
-    if (!seedOption || !descriptionOption) {
-      await interaction.reply("Please provide both seed and description.");
-      return;
-    }
-
-    // Read the seeds data from the JSON file
-    let seeds = [];
-    try {
-      seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
-    } catch (error) {
-      console.error("Error reading seeds.json:", error);
-    }
-
-    // Add the submitted seed to the seeds array
-    seeds.push({ seed: seedOption, description: descriptionOption });
-
-    // Write the updated seeds array back to the JSON file
-    fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds, null, 2));
-
-    await interaction.reply("Seed submitted successfully!");
+  // Read the existing seeds from the JSON file
+  let seeds = [];
+  try {
+    seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
+  } catch (error) {
+    console.error("Error reading seeds.json:", error);
   }
-});
+
+  // Add the submitted seed to the array
+  seeds.push({ seed, description });
+
+  // Write the updated seeds array back to the JSON file
+  try {
+    fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
+    console.log("Seed saved successfully.");
+  } catch (error) {
+    console.error("Error writing seeds.json:", error);
+  }
+};
 
 client.login(process.env.TOKEN);
