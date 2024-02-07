@@ -1,5 +1,10 @@
 import { config } from "dotenv";
-import { Client, IntentsBitField, ActivityType } from "discord.js";
+import {
+  Client,
+  IntentsBitField,
+  ActivityType,
+  EmbedBuilder,
+} from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
 const seedDataFilePath = "seeds.json";
@@ -49,17 +54,15 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName } = interaction;
 
   if (commandName === "help") {
-    const helpMessage =
-      "Here are the available commands:\n" +
-      "/submit - Submit your amazing speedrunning seed. Usage: `/submit seed=<your seed> description=<your description>`\n" +
-      "/request - Request a random seed.\n" +
-      "/help - Display information about available commands.";
+    const embed = new EmbedBuilder()
+    .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
+    .setDescription("Below is a list of all commands for the bot, what they do and how the bot works!")
+    .setColor(0x0f5132)
+    .setThumbnail(client.user.displayAvatarURL()) 
+    .addFields({ name: 'Regular field title', value: 'Some value here' });
 
-    try {
-      await interaction.reply(helpMessage);
-    } catch (error) {
-      console.error("Error sending help message:", error);
-    }
+  // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
+  interaction.reply({ embeds: [embed] });
   }
 
   // Your existing code for seed submission
