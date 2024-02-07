@@ -53,6 +53,30 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
+  if (commandName === "strongholdcalc") {
+    const x = interaction.options.getNumber("x");
+    const y = interaction.options.getNumber("y");
+    const f = interaction.options.getNumber("f");
+    const x2 = interaction.options.getNumber("x2");
+    const y2 = interaction.options.getNumber("y2");
+    const f2 = interaction.options.getNumber("f2");
+
+    // Calculate the intersection point
+    const mathY = -y;
+    const mathY2 = -y2;
+    const mathf = -(f + 90);
+    const mathf2 = -(f2 + 90);
+    const m1 = Math.tan(mathf * (Math.PI / 180));
+    const m2 = Math.tan(mathf2 * (Math.PI / 180));
+    const b1 = mathY - m1 * x;
+    const b2 = mathY2 - m2 * x2;
+    const intersectionX = (b2 - b1) / (m1 - m2);
+    const intersectionY = m1 * intersectionX + b1;
+
+    // Send the calculated result back to the user
+    await interaction.reply(`Intersection Point: (${intersectionX.toFixed(2)}, ${-intersectionY.toFixed(2)})`);
+  }
+
   if (commandName === "help") {
     const embed = new EmbedBuilder()
       .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
