@@ -55,14 +55,28 @@ client.on("interactionCreate", async (interaction) => {
 
   if (commandName === "help") {
     const embed = new EmbedBuilder()
-    .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
-    .setDescription("Below is a list of all commands for the bot, what they do and how the bot works!")
-    .setColor(0x0f5132)
-    .setThumbnail(client.user.displayAvatarURL()) 
-    .addFields({ name: 'Regular field title', value: 'Some value here' });
+      .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
+      .setDescription(
+        "Here's a list with all the info about SpeedrunSeeds bot! for any questions or inquiries add salted.js on discord"
+      )
+      .setColor(0x0f5132)
+      .setThumbnail(client.user.displayAvatarURL())
+      .addFields(
+        {
+          name: "/submit command",
+          value:
+            "/submit allows users to submit the best speedrunning seeds that they have come across, which is then stored in our seed database!" +
+            " SpeedrunSeeds bot also makes sure that you won't get your own seeds when using the /request command",
+        },
+        {
+          name: "/request command",
+          value:
+            "/request allows users to receive a random seed from the seed database and makes sure to never give that user the same seed twice",
+        }
+      );
 
-  // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
-  interaction.reply({ embeds: [embed] });
+    // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
+    interaction.reply({ embeds: [embed] });
   }
 
   // Your existing code for seed submission
