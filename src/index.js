@@ -49,7 +49,7 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName } = interaction;
 
   if (commandName === "help") {
-    const helpMessage = 
+    const helpMessage =
       "Here are the available commands:\n" +
       "/submit - Submit your amazing speedrunning seed. Usage: `/submit seed=<your seed> description=<your description>`\n" +
       "/request - Request a random seed.\n" +
@@ -58,7 +58,7 @@ client.on("interactionCreate", async (interaction) => {
     try {
       await interaction.reply(helpMessage);
     } catch (error) {
-      console.error('Error sending help message:', error);
+      console.error("Error sending help message:", error);
     }
   }
 
@@ -66,8 +66,9 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "submit") {
     const seed = interaction.options.getString("seed");
     const description = interaction.options.getString("description");
+    const submitterId = interaction.user.id;
 
-    await interaction.reply(`${seed} with description "${description}" was successfully added`);
+    await interaction.reply(`seed was successfully added!`);
 
     // Read the existing seeds from the JSON file
     let seeds = [];
@@ -86,6 +87,29 @@ client.on("interactionCreate", async (interaction) => {
       console.log("Seed saved successfully.");
     } catch (error) {
       console.error("Error writing seeds.json:", error);
+    }
+    
+    let userData = {};
+    try {
+      userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
+    } catch (error) {
+      console.error("Error reading user_seeds.json:", error);
+    }
+
+    // Initialize user's seeds if not exist
+    if (!userData[submitterId]) {
+      userData[submitterId] = [];
+    }
+
+    // Add the submitted seed to the user's submitted seeds array
+    userData[submitterId].push(seed);
+
+    // Write the updated user data back to the JSON file
+    try {
+      fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
+      console.log("User seed data updated.");
+    } catch (error) {
+      console.error("Error writing user_seeds.json:", error);
     }
   } else if (interaction.commandName === "request") {
     // Read the available seeds from the JSON file
@@ -110,7 +134,9 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     // Filter seeds that the user hasn't received yet
-    const availableSeeds = seeds.filter(seed => !userData[interaction.user.id].includes(seed.seed));
+    const availableSeeds = seeds.filter(
+      (seed) => !userData[interaction.user.id].includes(seed.seed)
+    );
 
     // If there are available seeds
     if (availableSeeds.length > 0) {
@@ -119,7 +145,9 @@ client.on("interactionCreate", async (interaction) => {
       const selectedSeed = availableSeeds[randomIndex];
 
       // Send the selected seed to the user
-      await interaction.user.send(`Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`);
+      await interaction.user.send(
+        `Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`
+      );
 
       // Update user data to mark that the user has received this seed
       userData[interaction.user.id].push(selectedSeed.seed);
@@ -131,10 +159,14 @@ client.on("interactionCreate", async (interaction) => {
       }
 
       // Inform the channel that the seed has been personally delivered
-      await interaction.reply("A random seed has been personally delivered to you.");
+      await interaction.reply(
+        "A random seed has been personally delivered to you."
+      );
     } else {
       // If no seeds are available
-      await interaction.reply(`<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`);
+      await interaction.reply(
+        `<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`
+      );
     }
   }
 });
