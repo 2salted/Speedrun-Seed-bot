@@ -68,8 +68,6 @@ client.on("interactionCreate", async (interaction) => {
     const description = interaction.options.getString("description");
     const submitterId = interaction.user.id;
 
-    await interaction.reply(`seed was successfully added!`);
-
     // Read the existing seeds from the JSON file
     let seeds = [];
     try {
@@ -77,6 +75,17 @@ client.on("interactionCreate", async (interaction) => {
     } catch (error) {
       console.error("Error reading seeds.json:", error);
     }
+
+    // Check if the submitted seed already exists in the seeds.json file
+    const seedExists = seeds.some((s) => s.seed === seed);
+
+    if (seedExists) {
+      await interaction.reply("This seed is already in the database.");
+      return;
+    }
+
+    // Proceed with adding the seed if it doesn't exist
+    await interaction.reply(`Seed was successfully added!`);
 
     // Add the submitted seed to the array
     seeds.push({ seed, description });
@@ -88,7 +97,7 @@ client.on("interactionCreate", async (interaction) => {
     } catch (error) {
       console.error("Error writing seeds.json:", error);
     }
-    
+
     let userData = {};
     try {
       userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
