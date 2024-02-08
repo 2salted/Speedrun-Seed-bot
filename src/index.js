@@ -4,7 +4,6 @@ import {
   IntentsBitField,
   ActivityType,
   EmbedBuilder,
-  Embed,
 } from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
@@ -102,10 +101,10 @@ client.on("interactionCreate", async (interaction) => {
       });
 
     // Send the calculated result back to the user
-    await interaction.reply({ embeds: [eyeOfEnderEmbed] });
+    interaction.reply({ embeds: [eyeOfEnderEmbed] });
   }
 
-  if (commandName === "help") {
+  if (interaction.commandName === "help") {
     const embed = new EmbedBuilder()
       .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
       .setDescription(
@@ -127,13 +126,20 @@ client.on("interactionCreate", async (interaction) => {
         },
         {
           name: "/help command",
-          value: 
-          "this command will give you more information on how the bot works and how to use the commands properly!"
+          value:
+            "this command will give you more information on how the bot works and how to use the commands properly!",
         }
       );
 
     // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
     interaction.reply({ embeds: [embed] });
+  }
+
+  if (interaction.commandName === "helpstrongholdfinder") {
+    const strongholdEmbed = new EmbedBuilder()
+    .setTitle("How does the stronghold finder work?");
+
+    interaction.reply({ embeds: [strongholdEmbed] });
   }
 
   // Your existing code for seed submission
