@@ -4,6 +4,7 @@ import {
   IntentsBitField,
   ActivityType,
   EmbedBuilder,
+  Embed,
 } from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
@@ -83,11 +84,23 @@ client.on("interactionCreate", async (interaction) => {
     const intersectionY = m1 * intersectionX + b1;
 
     // Send the calculated result back to the user
-    await interaction.reply(
-      `Intersection Point: (${intersectionX.toFixed(
-        0
-      )}, ${-intersectionY.toFixed(0)})`
+    const targetX = x2; // Specify the X coordinate of the target point
+    const targetY = y2; // Specify the Y coordinate of the target point
+    const distance = Math.sqrt(
+      Math.pow(intersectionX - targetX, 2) +
+        Math.pow(intersectionY - targetY, 2)
     );
+    const eyeOfEnderEmbed = new EmbedBuilder()
+      .setTitle("Stronghold Triangulation Calculator")
+      .setColor(0x0f5132)
+      .setThumbnail(client.user.displayAvatarURL())
+      .addFields({
+        name: `The Stronghold is at (x = ${intersectionX.toFixed(0)}   z = ${-intersectionY.toFixed(0)})`,
+        value: `(${distance.toFixed(0)} Blocks Away)`
+      });
+
+    // Send the calculated result back to the user
+    await interaction.reply({ embeds: [eyeOfEnderEmbed] });
   }
 
   if (commandName === "help") {
