@@ -53,9 +53,9 @@ client.on("interactionCreate", async (interaction) => {
 
   const { commandName } = interaction;
 
-  if (commandName === "strongholdcalc") {
-    const command1 = interaction.options.getString("command1");
-    const command2 = interaction.options.getString("command2");
+  if (commandName === "strongholdfinder") {
+    const command1 = interaction.options.getString("firsteye");
+    const command2 = interaction.options.getString("secondeye");
 
     // Extracting numbers from command1
     const numbers1 = command1.match(/-?\d+(\.\d+)?/g).map(Number);

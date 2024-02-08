@@ -39,17 +39,17 @@ async function registerCommands() {
       .setDescription("Display information about available commands.")
       .toJSON(),
       new SlashCommandBuilder()
-      .setName("strongholdcalc")
+      .setName("strongholdfinder")
       .setDescription("Calculate the intersection point of two lines")
       .addStringOption((option) =>
         option
-          .setName("command1")
+          .setName("firsteye")
           .setDescription("Enter the first command string")
           .setRequired(true)
       )
       .addStringOption((option) =>
         option
-          .setName("command2")
+          .setName("secondeye")
           .setDescription("Enter the second command string")
           .setRequired(true)
       )
