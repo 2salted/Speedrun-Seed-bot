@@ -95,8 +95,10 @@ client.on("interactionCreate", async (interaction) => {
       .setColor(0x0f5132)
       .setThumbnail(client.user.displayAvatarURL())
       .addFields({
-        name: `The Stronghold is at (x = ${intersectionX.toFixed(0)}   z = ${-intersectionY.toFixed(0)})`,
-        value: `(${distance.toFixed(0)} Blocks Away)`
+        name: `The Stronghold is at (x = ${intersectionX.toFixed(
+          0
+        )}   z = ${-intersectionY.toFixed(0)})`,
+        value: `(${distance.toFixed(0)} Blocks Away)`,
       });
 
     // Send the calculated result back to the user
@@ -115,13 +117,18 @@ client.on("interactionCreate", async (interaction) => {
         {
           name: "/submit command",
           value:
-            "/submit allows users to submit the best speedrunning seeds that they have come across, which is then stored in our seed database!" +
-            " SpeedrunSeeds bot also makes sure that you won't get your own seeds when using the /request command",
+            "/submit command allows user the enter amazing speedrunning seeds with a small description of that seed",
         },
         {
           name: "/request command",
           value:
-            "/request allows users to receive a random seed from the seed database and makes sure to never give that user the same seed twice",
+            "/request command will randomly pick a seed from the database and DM it to you, " +
+            "ensuring no one else can use it without using the bot first",
+        },
+        {
+          name: "/help command",
+          value: 
+          "this command will give you more information on how the bot works and how to use the commands properly!"
         }
       );
 
