@@ -54,27 +54,40 @@ client.on("interactionCreate", async (interaction) => {
   const { commandName } = interaction;
 
   if (commandName === "strongholdcalc") {
-    const x = interaction.options.getNumber("x");
-    const y = interaction.options.getNumber("y");
-    const f = interaction.options.getNumber("f");
-    const x2 = interaction.options.getNumber("x2");
-    const y2 = interaction.options.getNumber("y2");
-    const f2 = interaction.options.getNumber("f2");
+    const command1 = interaction.options.getString("command1");
+    const command2 = interaction.options.getString("command2");
 
+    // Extracting numbers from command1
+    const numbers1 = command1.match(/-?\d+(\.\d+)?/g).map(Number);
+    const x1 = numbers1[0];
+    const y1 = numbers1[2];
+    const f1 = numbers1[3];
+
+    // Extracting numbers from command2
+    const numbers2 = command2.match(/-?\d+(\.\d+)?/g).map(Number);
+    const x2 = numbers2[0];
+    const y2 = numbers2[2];
+    const f2 = numbers2[3];
+
+    console.log(x1, y1, f1, x2, y2, f2);
     // Calculate the intersection point
-    const mathY = -y;
+    const mathY1 = -y1;
     const mathY2 = -y2;
-    const mathf = -(f + 90);
+    const mathf1 = -(f1 + 90);
     const mathf2 = -(f2 + 90);
-    const m1 = Math.tan(mathf * (Math.PI / 180));
+    const m1 = Math.tan(mathf1 * (Math.PI / 180));
     const m2 = Math.tan(mathf2 * (Math.PI / 180));
-    const b1 = mathY - m1 * x;
+    const b1 = mathY1 - m1 * x1;
     const b2 = mathY2 - m2 * x2;
     const intersectionX = (b2 - b1) / (m1 - m2);
     const intersectionY = m1 * intersectionX + b1;
 
     // Send the calculated result back to the user
-    await interaction.reply(`Intersection Point: (${intersectionX.toFixed(2)}, ${-intersectionY.toFixed(2)})`);
+    await interaction.reply(
+      `Intersection Point: (${intersectionX.toFixed(
+        0
+      )}, ${-intersectionY.toFixed(0)})`
+    );
   }
 
   if (commandName === "help") {

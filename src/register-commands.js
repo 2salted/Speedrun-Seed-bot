@@ -38,36 +38,22 @@ async function registerCommands() {
       .setName("help")
       .setDescription("Display information about available commands.")
       .toJSON(),
-    new SlashCommandBuilder()
+      new SlashCommandBuilder()
       .setName("strongholdcalc")
       .setDescription("Calculate the intersection point of two lines")
-      .addNumberOption((option) =>
-        option.setName("x").setDescription("X Position").setRequired(true)
-      )
-      .addNumberOption((option) =>
-        option.setName("y").setDescription("Y Position").setRequired(true)
-      )
-      .addNumberOption((option) =>
-        option.setName("f").setDescription("Facing Angle").setRequired(true)
-      )
-      .addNumberOption((option) =>
+      .addStringOption((option) =>
         option
-          .setName("x2")
-          .setDescription("Second X Position")
+          .setName("command1")
+          .setDescription("Enter the first command string")
           .setRequired(true)
       )
-      .addNumberOption((option) =>
+      .addStringOption((option) =>
         option
-          .setName("y2")
-          .setDescription("Second Y Position")
+          .setName("command2")
+          .setDescription("Enter the second command string")
           .setRequired(true)
       )
-      .addNumberOption((option) =>
-        option
-          .setName("f2")
-          .setDescription("Second Facing Angle")
-          .setRequired(true)
-      ),
+      .toJSON(),
   ];
 
   const rest = new REST({ version: "10" }).setToken(process.env.TOKEN);
