@@ -81,19 +81,31 @@ client.on("interactionCreate", async (interaction) => {
     const intersectionX = (b2 - b1) / (m1 - m2);
     const intersectionY = m1 * intersectionX + b1;
 
-    console.log(x2, y2, intersectionX, intersectionY);
+    const netherCoordsX = intersectionX / 8;
+    const netherCoordsY = intersectionY / 8;
 
-    const distanceBlocks = Math.sqrt(Math.pow(intersectionX + x2, 2) - Math.pow(intersectionY + y2, 2));
-  
+    // Calculate the distance between the intersection point and the starting point of the second Eye of Ender trajectory
+    const blockDistance = Math.sqrt(
+      Math.pow(intersectionX - x2, 2) + Math.pow(-intersectionY - y2, 2)
+    );
+
+    const netherBlockDistance = blockDistance / 8;
+
     const eyeOfEnderEmbed = new EmbedBuilder()
       .setTitle("Stronghold Triangulation Calculator")
       .setColor(0x0f5132)
       .setThumbnail(client.user.displayAvatarURL())
       .addFields({
-        name: `The Stronghold is at (x = ${intersectionX.toFixed(
-          0
-        )}   z = ${-intersectionY.toFixed(0)})`,
-        value: `(${distanceBlocks.toFixed(0)} Blocks Away)`,
+        name:
+          `Overworld Coords: (x = ${intersectionX.toFixed(
+            0
+          )}   z = ${-intersectionY.toFixed(0)}) \n` +
+          `Nether Coords: (x = ${netherCoordsX.toFixed(
+            0
+          )}   z = ${-netherCoordsY.toFixed(0)})`,
+        value:
+          `Overworld: (${blockDistance.toFixed(0)} Blocks) \n` +
+          `Nether: (${netherBlockDistance.toFixed(0)} Blocks) \n`,
       });
 
     // Send the calculated result back to the user
