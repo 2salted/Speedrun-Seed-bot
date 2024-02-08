@@ -69,7 +69,6 @@ client.on("interactionCreate", async (interaction) => {
     const y2 = numbers2[2];
     const f2 = numbers2[3];
 
-    console.log(x1, y1, f1, x2, y2, f2);
     // Calculate the intersection point
     const mathY1 = -y1;
     const mathY2 = -y2;
@@ -82,13 +81,10 @@ client.on("interactionCreate", async (interaction) => {
     const intersectionX = (b2 - b1) / (m1 - m2);
     const intersectionY = m1 * intersectionX + b1;
 
-    // Send the calculated result back to the user
-    const targetX = x2; // Specify the X coordinate of the target point
-    const targetY = y2; // Specify the Y coordinate of the target point
-    const distance = Math.sqrt(
-      Math.pow(intersectionX - targetX, 2) +
-        Math.pow(intersectionY - targetY, 2)
-    );
+    console.log(x2, y2, intersectionX, intersectionY);
+
+    const distanceBlocks = Math.sqrt(Math.pow(intersectionX + x2, 2) - Math.pow(intersectionY + y2, 2));
+  
     const eyeOfEnderEmbed = new EmbedBuilder()
       .setTitle("Stronghold Triangulation Calculator")
       .setColor(0x0f5132)
@@ -97,7 +93,7 @@ client.on("interactionCreate", async (interaction) => {
         name: `The Stronghold is at (x = ${intersectionX.toFixed(
           0
         )}   z = ${-intersectionY.toFixed(0)})`,
-        value: `(${distance.toFixed(0)} Blocks Away)`,
+        value: `(${distanceBlocks.toFixed(0)} Blocks Away)`,
       });
 
     // Send the calculated result back to the user
@@ -136,8 +132,9 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.commandName === "helpstrongholdfinder") {
-    const strongholdEmbed = new EmbedBuilder()
-    .setTitle("How does the stronghold finder work?");
+    const strongholdEmbed = new EmbedBuilder().setTitle(
+      "How does the stronghold finder work?"
+    );
 
     interaction.reply({ embeds: [strongholdEmbed] });
   }
