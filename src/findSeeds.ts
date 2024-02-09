@@ -1,19 +1,21 @@
 import type { Subprocess } from "bun";
 
-const DEFAULT_DISTANCE = 1000;
+const DEFAULT_DISTANCE = 200;
 const SERVER_PROP_PATH = "minecraft/server.properties";
 const MC_WORLD_PATH = "minecraft/world";
 
 const OVERWORLD_STRUCTURES: Record<string, number> = {
-    "village": DEFAULT_DISTANCE,
-    "desert_pyramid": DEFAULT_DISTANCE,
-    "shipwreck": DEFAULT_DISTANCE,
+    "village": 160,
+    "desert_pyramid": 80,
+    "shipwreck": 70,
+    "ruined_portal": 65,
+    "buried_treasure": 45,
 }
 const BASTIAN_REMNANT: Record<string, number> = {
-    "bastion_remnant": DEFAULT_DISTANCE,
+    "bastion_remnant": 140,
 }
 const NETHER_FORTRESS: Record<string, number> = {
-    "fortress": DEFAULT_DISTANCE,
+    "fortress": 200,
 }
 
 async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">, reader: ReadableStreamDefaultReader<Uint8Array>, structureOptions: Record<string, number>, dimension: string): Promise<StructureResult | undefined> {
