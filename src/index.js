@@ -9,6 +9,12 @@ import { registerCommands } from "./register-commands.js";
 import fs from "fs";
 const seedDataFilePath = "seeds.json";
 const userDataFilePath = "user_seeds.json";
+if (!fs.existsSync(seedDataFilePath)) {
+  fs.writeFileSync(seedDataFilePath, "[]");
+}
+if (!fs.existsSync(userDataFilePath)) {
+  fs.writeFileSync(userDataFilePath, "{}");
+}
 
 config();
 registerCommands();
