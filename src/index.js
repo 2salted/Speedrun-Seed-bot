@@ -138,11 +138,7 @@ client.on("interactionCreate", async (interaction) => {
         {
           name: "/strongholdfinder",
           value:
-            "To properly use the /strongholdfinder command you have to first" +
-            "line up your ender eye with your cursor. When your ready press (f3 + C) inside of Minecraft.\n" +
-            "On discord use /strongholdfinder command, then paste (ctrl + v) in the 'first eye'. \n" +
-            "Now you want to turn 90 degrees from where the first eye pointed and travel in that direction (6 chunks or more for best accuracy)\n" +
-            "Repeat the process throw your second eye... aim your cursor, then (F3 + C) and paste it into 'second eye' and press enter"
+            "1. Line up your cursor to your ender eye and p"
         }
       );
 
