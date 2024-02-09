@@ -149,7 +149,8 @@ client.on("interactionCreate", async (interaction) => {
       .addFields({
         name:
           "To properly use the /strongholdfinder command you have to first" +
-          "line up your ender eye and when your ready press (f3 + C)",
+          "line up your ender eye with your cursor. When your ready press (f3 + C) inside of Minecraft.\n" +
+          "Open discord and call the /strongholdfinder command, then paste  "
       });
 
     interaction.reply({ embeds: [strongholdEmbed] });
