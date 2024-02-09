@@ -24,9 +24,7 @@ const client = new Client({
 
 client.once("ready", () => {
   console.log(`${client.user.tag} is online.`);
-
   updateStatus();
-
   setInterval(updateStatus, 10 * 1000);
 });
 
@@ -41,7 +39,7 @@ async function updateStatus() {
 
   // Set the bot's activity to "Watching <number of seeds> seeds"
   client.user.setActivity({
-    name: `${seeds.length} seeds`,
+    name: `${Object.keys(seeds).length} seeds`,
     type: ActivityType.Watching,
   });
 }
@@ -120,11 +118,6 @@ client.on("interactionCreate", async (interaction) => {
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(
         {
-          name: "/submit command",
-          value:
-            "/submit command allows user the enter amazing speedrunning seeds with a small description of that seed",
-        },
-        {
           name: "/request command",
           value:
             "/request command will randomly pick a seed from the database and DM it to you, " +
@@ -147,64 +140,8 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   // Your existing code for seed submission
-  if (interaction.commandName === "submit") {
-    const seed = interaction.options.getString("seed");
-    const description = interaction.options.getString("description");
-    const submitterId = interaction.user.id;
-
-    // Read the existing seeds from the JSON file
-    let seeds = [];
-    try {
-      seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
-    } catch (error) {
-      console.error("Error reading seeds.json:", error);
-    }
-
-    // Check if the submitted seed already exists in the seeds.json file
-    const seedExists = seeds.some((s) => s.seed === seed);
-
-    if (seedExists) {
-      await interaction.reply("This seed is already in the database.");
-      return;
-    }
-
-    // Proceed with adding the seed if it doesn't exist
-    await interaction.reply(`Seed was successfully added!`);
-
-    // Add the submitted seed to the array
-    seeds.push({ seed, description });
-
-    try {
-      fs.writeFileSync(seedDataFilePath, JSON.stringify(seeds));
-      console.log("Seed saved successfully.");
-    } catch (error) {
-      console.error("Error writing seeds.json:", error);
-    }
-
-    let userData = {};
-    try {
-      userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
-    } catch (error) {
-      console.error("Error reading user_seeds.json:", error);
-    }
-
-    // Initialize user's seeds if not exist
-    if (!userData[submitterId]) {
-      userData[submitterId] = [];
-    }
-
-    // Add the submitted seed to the user's submitted seeds array
-    userData[submitterId].push(seed);
-
-    // Write the updated user data back to the JSON file
-    try {
-      fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
-      console.log("User seed data updated.");
-    } catch (error) {
-      console.error("Error writing user_seeds.json:", error);
-    }
-  } else if (interaction.commandName === "request") {
-    let seeds = [];
+  if (interaction.commandName === "request") {
+    let seeds = {};
     try {
       seeds = JSON.parse(fs.readFileSync(seedDataFilePath, "utf8"));
     } catch (error) {
@@ -222,7 +159,8 @@ client.on("interactionCreate", async (interaction) => {
       userData[interaction.user.id] = [];
     }
 
-    const availableSeeds = seeds.filter(
+
+    const availableSeeds = Object.keys(seeds).filter(
       (seed) => !userData[interaction.user.id].includes(seed.seed)
     );
 
@@ -231,10 +169,11 @@ client.on("interactionCreate", async (interaction) => {
       const selectedSeed = availableSeeds[randomIndex];
 
       await interaction.user.send(
-        `Your random seed is: ${selectedSeed.seed} with description "${selectedSeed.description}"`
+        `Your random seed is: ${selectedSeed}`
       );
 
-      userData[interaction.user.id].push(selectedSeed.seed);
+
+      userData[interaction.user.id].push(selectedSeed);
       try {
         fs.writeFileSync(userDataFilePath, JSON.stringify(userData));
         console.log("User seed data updated.");
