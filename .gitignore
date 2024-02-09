@@ -1,4 +1,11 @@
 .env
 node_modules
+seeds.json
+user_seeds.json
+.devcontainer
+.github
+minecraft
+seedFinder.json
+.vscode
 user_seeds.json
 seeds.json

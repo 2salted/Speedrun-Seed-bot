@@ -13,6 +13,11 @@
   "dependencies": {
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
-    "mongoose": "^8.1.1"
+    "mongoose": "^8.1.1",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.0.5",
+    "bun-types": "^1.0.26"
   }
 }
