@@ -144,9 +144,13 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   if (interaction.commandName === "helpstrongholdfinder") {
-    const strongholdEmbed = new EmbedBuilder().setTitle(
-      "How does the stronghold finder work?"
-    );
+    const strongholdEmbed = new EmbedBuilder()
+      .setTitle("How does the stronghold finder work?")
+      .addFields({
+        name:
+          "To properly use the /strongholdfinder command you have to first" +
+          "line up your ender eye and when your ready press (f3 + C)",
+      });
 
     interaction.reply({ embeds: [strongholdEmbed] });
   }
