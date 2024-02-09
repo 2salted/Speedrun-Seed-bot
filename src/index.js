@@ -136,8 +136,7 @@ client.on("interactionCreate", async (interaction) => {
         },
         {
           name: "/strongholdfinder",
-          value:
-            "1. Line up your cursor to your ender eye and p"
+          value: "1. Line up your cursor to your ender eye and p",
         }
       );
 
@@ -165,19 +164,15 @@ client.on("interactionCreate", async (interaction) => {
       userData[interaction.user.id] = [];
     }
 
-
     const availableSeeds = Object.keys(seeds).filter(
-      (seed) => !userData[interaction.user.id].includes(seed.seed)
+      (seed) => !userData[interaction.user.id].includes(seed)
     );
 
     if (availableSeeds.length > 0) {
       const randomIndex = Math.floor(Math.random() * availableSeeds.length);
       const selectedSeed = availableSeeds[randomIndex];
 
-      await interaction.user.send(
-        `Your random seed is: ${selectedSeed}`
-      );
-
+      await interaction.user.send(`Your random seed is: ${selectedSeed}`);
 
       userData[interaction.user.id].push(selectedSeed);
       try {

@@ -5,17 +5,17 @@ const SERVER_PROP_PATH = "minecraft/server.properties";
 const MC_WORLD_PATH = "minecraft/world";
 
 const OVERWORLD_STRUCTURES: Record<string, number> = {
-    "village": 190,
+    "village": 170,
     "desert_pyramid": 80,
-    "shipwreck": 70,
-    "ruined_portal": 65,
-    "buried_treasure": 60,
+    "shipwreck": 96,
+    "ruined_portal": 50,
+    "buried_treasure": 80,
 }
 const BASTIAN_REMNANT: Record<string, number> = {
-    "bastion_remnant": 200,
+    "bastion_remnant": 240,
 }
 const NETHER_FORTRESS: Record<string, number> = {
-    "fortress": 200,
+    "fortress": 270,
 }
 
 async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">, reader: ReadableStreamDefaultReader<Uint8Array>, structureOptions: Record<string, number>, dimension: string): Promise<StructureResult | undefined> {
