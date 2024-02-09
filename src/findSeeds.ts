@@ -5,14 +5,14 @@ const SERVER_PROP_PATH = "minecraft/server.properties";
 const MC_WORLD_PATH = "minecraft/world";
 
 const OVERWORLD_STRUCTURES: Record<string, number> = {
-    "village": 160,
+    "village": 190,
     "desert_pyramid": 80,
     "shipwreck": 70,
     "ruined_portal": 65,
-    "buried_treasure": 45,
+    "buried_treasure": 60,
 }
 const BASTIAN_REMNANT: Record<string, number> = {
-    "bastion_remnant": 140,
+    "bastion_remnant": 200,
 }
 const NETHER_FORTRESS: Record<string, number> = {
     "fortress": 200,
