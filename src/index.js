@@ -127,24 +127,20 @@ client.on("interactionCreate", async (interaction) => {
           name: "/help command",
           value:
             "this command will give you more information on how the bot works and how to use the commands properly!",
+        },
+        {
+          name: "/strongholdfinder",
+          value:
+            "To properly use the /strongholdfinder command you have to first" +
+            "line up your ender eye with your cursor. When your ready press (f3 + C) inside of Minecraft.\n" +
+            "On discord use /strongholdfinder command, then paste (ctrl + v) in the 'first eye'. \n" +
+            "Now you want to turn 90 degrees from where the first eye pointed and travel in that direction (6 chunks or more for best accuracy)\n" +
+            "Repeat the process throw your second eye... aim your cursor, then (F3 + C) and paste it into 'second eye' and press enter"
         }
       );
 
     // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
     interaction.reply({ embeds: [embed] });
-  }
-
-  if (interaction.commandName === "helpstrongholdfinder") {
-    const strongholdEmbed = new EmbedBuilder()
-      .setTitle("How does the stronghold finder work?")
-      .addFields({
-        name:
-          "To properly use the /strongholdfinder command you have to first" +
-          "line up your ender eye with your cursor. When your ready press (f3 + C) inside of Minecraft.\n" +
-          "Open discord and call the /strongholdfinder command, then paste  "
-      });
-
-    interaction.reply({ embeds: [strongholdEmbed] });
   }
 
   // Your existing code for seed submission
@@ -156,14 +152,12 @@ client.on("interactionCreate", async (interaction) => {
       console.error("Error reading seeds.json:", error);
     }
 
-
     let userData = {};
     try {
       userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
     } catch (error) {
       console.error("Error reading user_seeds.json:", error);
     }
-
 
     if (!userData[interaction.user.id]) {
       userData[interaction.user.id] = [];
@@ -174,12 +168,9 @@ client.on("interactionCreate", async (interaction) => {
       (seed) => !userData[interaction.user.id].includes(seed.seed)
     );
 
-
     if (availableSeeds.length > 0) {
-
       const randomIndex = Math.floor(Math.random() * availableSeeds.length);
       const selectedSeed = availableSeeds[randomIndex];
-
 
       await interaction.user.send(
         `Your random seed is: ${selectedSeed}`
@@ -194,12 +185,10 @@ client.on("interactionCreate", async (interaction) => {
         console.error("Error writing user_seeds.json:", error);
       }
 
-
       await interaction.reply(
         "A random seed has been personally delivered to you."
       );
     } else {
-
       await interaction.reply(
         `<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`
       );
