@@ -118,7 +118,7 @@ async function setSeed(seed: string) {
 }
 
 async function findSeeds() {
-    let allSeeds = await Bun.file("seedFinder.json");
+    let allSeeds = await Bun.file("foundSeeds.txt");
     let writer = allSeeds.writer()
     while (true) {
         let seed = Math.floor(Math.random() * 1000000000).toString();
