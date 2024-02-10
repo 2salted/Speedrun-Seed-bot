@@ -18,8 +18,13 @@ const NETHER_FORTRESS: Record<string, number> = {
     "fortress": 270,
 }
 
-async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">, reader: ReadableStreamDefaultReader<Uint8Array>, structureOptions: Record<string, number>, dimension: string): Promise<StructureResult | undefined> {
-    for (let [structure, distance] of Object.entries(structureOptions)) {
+async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">,
+    reader: ReadableStreamDefaultReader<Uint8Array>,
+    structureOptions: Record<string, number>,
+    dimension: string,
+    fromLocation: number[] | undefined): Promise<StructureResult | undefined> {
+
+    for (let [structure, minDist] of Object.entries(structureOptions)) {
         mc.stdin.write(`/execute in minecraft:${dimension} run locate ${structure}\n`);
         Bun.sleep(10);
         let text = new TextDecoder().decode((await reader.read()).value);
@@ -29,12 +34,15 @@ async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">, reader: 
         let match = text.match(/The nearest (\w+) is at \[(-?\d+), ~, (-?\d+)\] \((\d+) blocks away\)/);
         // if blocks away number is less than the distance we are looking for
         console.log(`match`, match);
-        if (match && parseInt(match[4]) <= distance) {
-            return {
-                name: structure,
-                x: parseInt(match[2]),
-                z: parseInt(match[3]),
-                distance: parseInt(match[4])
+        if (match) {
+            let distance = fromLocation ? Math.sqrt(Math.pow(parseInt(match[2]) - fromLocation[0], 2) + Math.pow(parseInt(match[3]) - fromLocation[1], 2)) : parseInt(match[4]);
+            if (distance <= minDist) {
+                return {
+                    name: structure,
+                    x: parseInt(match[2]),
+                    z: parseInt(match[3]),
+                    distance: distance
+                }
             }
         }
     }
@@ -73,20 +81,20 @@ async function testSeed(seed: string): Promise<SeedResult | undefined> {
     }
 
     // overworld
-    let overworld = await findStructure(mc, reader, OVERWORLD_STRUCTURES, "overworld");
+    let overworld = await findStructure(mc, reader, OVERWORLD_STRUCTURES, "overworld", undefined);
     if (!overworld) {
         mc.kill();
         return undefined;
     }
 
     // bastian remnant
-    let bastion_remnant = await findStructure(mc, reader, BASTIAN_REMNANT, "the_nether");
+    let bastion_remnant = await findStructure(mc, reader, BASTIAN_REMNANT, "the_nether", undefined);
     if (!bastion_remnant) {
         mc.kill();
         return undefined;
     }
 
-    let nether_fortress = await findStructure(mc, reader, NETHER_FORTRESS, "the_nether");
+    let nether_fortress = await findStructure(mc, reader, NETHER_FORTRESS, "the_nether", [bastion_remnant.x, bastion_remnant.z]);
     if (!nether_fortress) {
         mc.kill();
         return undefined;
