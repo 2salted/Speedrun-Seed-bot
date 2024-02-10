@@ -123,7 +123,7 @@ async function findSeeds() {
     let allSeeds = await Bun.file("foundSeeds.txt");
     let writer = allSeeds.writer()
     while (true) {
-        let seed = Math.floor(Math.random() * 1000000000).toString();
+        let seed = Math.floor(Math.random() * 1000000000000000).toString();
         let res = await testSeed(seed);
         if (res) {
             writer.write(`${seed}: ${JSON.stringify(res)}\n`);
