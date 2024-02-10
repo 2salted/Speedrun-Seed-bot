@@ -141,7 +141,9 @@ client.on("interactionCreate", async (interaction) => {
             "2. In discord do /strongholdfinder and in the 'first eye' input press (CTRL + V)\n" +
             "3. Turn 90 degrees right or left and for best accuracy throw your second eye atleast 6 chunks away from the first\n" +
             "4. Throw your second eye, aim your cursor at the eye and press (F3 + C) again\n" +
-            "5. While still having the /strongholdfinder command open press (CTRL + V) in the 'second eye' input" 
+            "5. While still having the /strongholdfinder command open press (CTRL + V) in the 'second eye' input\n" +
+            "\nImportant Info:\n" +
+            "When you are pasting the F3 + C, into the 'first eye' or 'second eye' it should look like this: \n `/execute in minecraft:overworld run tp @s Xposition, Yposition, Zposition, Xfacing, Yfacing`"
         }
       );
 
