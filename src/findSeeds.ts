@@ -21,9 +21,9 @@ const NETHER_FORTRESS: Record<string, number> = {
 async function findStructure(mc: Subprocess<"pipe", "pipe", "inherit">, reader: ReadableStreamDefaultReader<Uint8Array>, structureOptions: Record<string, number>, dimension: string): Promise<StructureResult | undefined> {
     for (let [structure, distance] of Object.entries(structureOptions)) {
         mc.stdin.write(`/execute in minecraft:${dimension} run locate ${structure}\n`);
-        Bun.sleep(1000);
+        Bun.sleep(10);
         let text = new TextDecoder().decode((await reader.read()).value);
-        Bun.sleep(1000);
+        Bun.sleep(10);
         console.log(`text`, text);
         // [06:29:12] [Server thread/INFO]: The nearest village is at [-160, ~, -336] (102 blocks away)
         let match = text.match(/The nearest (\w+) is at \[(-?\d+), ~, (-?\d+)\] \((\d+) blocks away\)/);
@@ -94,7 +94,7 @@ async function testSeed(seed: string): Promise<SeedResult | undefined> {
     console.log(`overworld: ${overworld.name} at ${overworld.x}, ${overworld.z} (${overworld.distance} blocks away)`);
     console.log(`bastion remnant: ${bastion_remnant.name} at ${bastion_remnant.x}, ${bastion_remnant.z} (${bastion_remnant.distance} blocks away)`);
     console.log(`nether fortress: ${nether_fortress.name} at ${nether_fortress.x}, ${nether_fortress.z} (${nether_fortress.distance} blocks away)`);
-    Bun.sleep(10000);
+    Bun.sleep(10);
 
     mc.kill();
     return {
@@ -116,7 +116,7 @@ async function setSeed(seed: string) {
     await Bun.$`sudo rm -rf ${MC_WORLD_PATH}`;
 
     console.log(`Set seed to ${seed}`);
-    Bun.sleep(5000);
+    Bun.sleep(10);
 }
 
 async function findSeeds() {
