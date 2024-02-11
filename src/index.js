@@ -116,7 +116,7 @@ client.on("interactionCreate", async (interaction) => {
 
   if (interaction.commandName === "help") {
     const embed = new EmbedBuilder()
-      .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.0")
+      .setTitle("SpeedrunSeeds Bot Help Alpha 1.5.3")
       .setDescription(
         "Here's a list with all the info about SpeedrunSeeds bot! for any questions or inquiries add salted.js on discord"
       )
@@ -143,7 +143,7 @@ client.on("interactionCreate", async (interaction) => {
             "4. Throw your second eye, aim your cursor at the eye and press (F3 + C) again\n" +
             "5. While still having the /strongholdfinder command open press (CTRL + V) in the 'second eye' input\n" +
             "\nImportant Info:\n" +
-            "When you are pasting the F3 + C, into the 'first eye' or 'second eye' it should look like this: \n `/execute in minecraft:overworld run tp @s Xposition, Yposition, Zposition, Xfacing, Yfacing`"
+            "When you are pasting the F3 + C, into the 'first eye' or 'second eye' it should look like this: \n `/execute in minecraft:overworld run tp @s Xposition, Yposition, Zposition, Xfacing, Yfacing`",
         }
       );
 

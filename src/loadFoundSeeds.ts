@@ -18,7 +18,7 @@ async function loadFoundSeeds() {
         }
     }
 
-    let writer = await Bun.file("./seeds.json").writer();
+    let writer = Bun.file("./seeds.json").writer();
     writer.write(JSON.stringify(seeds, null, 4));
     writer.end();
 }
