@@ -194,7 +194,7 @@ client.on("interactionCreate", async (interaction) => {
       );
     } else {
       await interaction.reply(
-        `<@${interaction.user.id}> Sorry, all seeds have been used. Please submit more seeds.`
+        `<@${interaction.user.id}> Sorry, all seeds have been used. Please wait until more seeds get submitted`
       );
     }
   }
