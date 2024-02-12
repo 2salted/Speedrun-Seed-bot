@@ -9,7 +9,7 @@ async function registerCommands() {
   const commands = [
     new SlashCommandBuilder()
       .setName("request")
-      .setDescription("Request a random seed")
+      .setDescription("Request a random speedrunning seed")
       .toJSON(),
     new SlashCommandBuilder()
       .setName("help")
@@ -17,17 +17,27 @@ async function registerCommands() {
       .toJSON(),
     new SlashCommandBuilder()
       .setName("strongholdfinder")
-      .setDescription("Calculate the intersection point of two lines")
+      .setDescription("Calculate the distance of the stronghold")
       .addStringOption((option) =>
         option
           .setName("firsteye")
-          .setDescription("Enter the first command string")
+          .setDescription("Paste the first eye's F3 + C debug")
           .setRequired(true)
       )
       .addStringOption((option) =>
         option
           .setName("secondeye")
-          .setDescription("Enter the second command string")
+          .setDescription("Paste the second eye's F3 + C debug")
+          .setRequired(true)
+      )
+      .toJSON(),
+      new SlashCommandBuilder()
+      .setName("vote")
+      .setDescription("upvote or downvote a seed")
+      .addStringOption((option) =>
+        option
+          .setName("seed")
+          .setDescription("paste the desired seed that you want to upvote or downvote")
           .setRequired(true)
       )
       .toJSON(),

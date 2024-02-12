@@ -59,13 +59,11 @@ client.on("interactionCreate", async (interaction) => {
     const command1 = interaction.options.getString("firsteye");
     const command2 = interaction.options.getString("secondeye");
 
-    // Extracting numbers from command1
     const numbers1 = command1.match(/-?\d+(\.\d+)?/g).map(Number);
     const x1 = numbers1[0];
     const y1 = numbers1[2];
     const f1 = numbers1[3];
 
-    // Extracting numbers from command2
     const numbers2 = command2.match(/-?\d+(\.\d+)?/g).map(Number);
     const x2 = numbers2[0];
     const y2 = numbers2[2];
@@ -110,7 +108,7 @@ client.on("interactionCreate", async (interaction) => {
           `Nether: (${netherBlockDistance.toFixed(0)} Blocks) \n`,
       });
 
-    // Send the calculated result back to the user
+    // Send the calculated result back to the user using an embed
     interaction.reply({ embeds: [eyeOfEnderEmbed] });
   }
 
@@ -147,11 +145,9 @@ client.on("interactionCreate", async (interaction) => {
         }
       );
 
-    // Send the embed with a local file attachment (replace 'thumbnail.png' with your file name)
     interaction.reply({ embeds: [embed] });
   }
 
-  // Your existing code for seed submission
   if (interaction.commandName === "request") {
     let seeds = {};
     try {
@@ -196,6 +192,39 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.reply(
         `<@${interaction.user.id}> Sorry, all seeds have been used. Please wait until more seeds get submitted`
       );
+    }
+  }
+
+  if (interaction.commandName === "vote") {
+    const seedCommand = interaction.options.getString("seed");
+    const userId = interaction.user.id;
+
+    let userData = {};
+    try {
+      userData = JSON.parse(fs.readFileSync(userDataFilePath, "utf8"));
+    } catch (error) {
+      console.error("Error reading user_seeds.json:", error);
+    }
+
+    // Check if the user has played the seed
+    if (userData[userId] && userData[userId].includes(seedCommand)) {
+      const votingEmbed = new EmbedBuilder()
+        .setTitle("Upvote or Downvote this seed: " + seedCommand)
+        .setDescription(
+          "Your feedback is the only way for us to make sure our seeds are kept in check!"
+        );
+
+      if (interaction.user.send({ embeds: [votingEmbed] })) {
+        interaction.reply(`<@${userId}> Check DMs`);
+      }
+    } else {
+      if (interaction.reply(`<@${userId}> Check DMs`)) {
+        interaction.user.send(
+          `Sorry <@${userId}>, you can't vote for: ` +
+            seedCommand +
+            ` because you have never played this seed`
+        );
+      }
     }
   }
 });
