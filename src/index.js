@@ -4,6 +4,7 @@ import {
   IntentsBitField,
   ActivityType,
   EmbedBuilder,
+  ChannelType
 } from "discord.js";
 import { registerCommands } from "./register-commands.js";
 import fs from "fs";
@@ -211,12 +212,19 @@ client.on("interactionCreate", async (interaction) => {
       const votingEmbed = new EmbedBuilder()
         .setTitle("Upvote or Downvote this seed: " + seedCommand)
         .setDescription(
-          "Your feedback is the only way for us to make sure our seeds are kept in check!"
+          "Your feedback is one of the only ways for us to make sure our seeds are kept in check"
         );
 
-      if (interaction.user.send({ embeds: [votingEmbed] })) {
+      interaction.user
+        .send({ embeds: [votingEmbed] })
+        .then((message) => {
+          message.react("👍"); // Add thumbs up reaction
+          message.react("👎"); // Add thumbs down reaction
+        })
+        .catch(console.error);
+
         interaction.reply(`<@${userId}> Check DMs`);
-      }
+      
     } else {
       if (interaction.reply(`<@${userId}> Check DMs`)) {
         interaction.user.send(
@@ -225,6 +233,23 @@ client.on("interactionCreate", async (interaction) => {
             ` because you have never played this seed`
         );
       }
+      // Listen for reactions
+      client.on("messageReactionAdd", (reaction, user) => {
+        // Check if the reaction is from a bot or the reaction is not on a DM
+        if (user.bot || reaction.ChannelType.DM || reaction.message.author.id !== client.user.id) {
+          return;
+        }
+
+        // Check if the reaction is on the voting message
+        if (reaction.message.author.id === client.user.id) {cod
+          // Check the reaction emoji
+          if (reaction.emoji.name === "👍") {
+            user.send("Thumbs up");
+          } else if (reaction.emoji.name === "👎") {
+            user.send("Thumbs down");
+          }
+        }
+      });
     }
   }
 });
