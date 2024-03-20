@@ -219,8 +219,8 @@ client.on("interactionCreate", async (interaction) => {
       interaction.user
         .send({ embeds: [votingEmbed] })
         .then((message) => {
-          message.react("👍"); // Add thumbs up reaction
-          message.react("👎"); // Add thumbs down reaction
+          message.react("👍"); 
+          message.react("👎"); 
     
           const filter = (reaction, user) => {
             return ["👍", "👎"].includes(reaction.emoji.name) && user.id === interaction.user.id;
